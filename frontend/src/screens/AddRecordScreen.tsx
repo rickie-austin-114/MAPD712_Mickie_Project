@@ -33,10 +33,10 @@ const AddRecordScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <TextInput placeholder="Patient Name" value={name} onChangeText={setName} />
-      <TextInput placeholder="Blood Pressure" value={bloodPressure} onChangeText={setBloodPressure} />
-      <TextInput placeholder="Respiratory Rate" value={respiratoryRate} onChangeText={setRespiratoryRate} />
-      <TextInput placeholder="Blood Oxygen Level" value={bloodOxygenLevel} onChangeText={setBloodOxygenLevel} />
-      <TextInput placeholder="Heartbeat Rate" value={heartbeatRate} onChangeText={setHeartbeatRate} />
+      <TextInput placeholder="Blood Pressure (mmHg)" value={bloodPressure} onChangeText={setBloodPressure} />
+      <TextInput placeholder="Respiratory Rate (/min)" value={respiratoryRate} onChangeText={setRespiratoryRate} />
+      <TextInput placeholder="Blood Oxygen Level (%)" value={bloodOxygenLevel} onChangeText={setBloodOxygenLevel} />
+      <TextInput placeholder="Heartbeat Rate (/min)" value={heartbeatRate} onChangeText={setHeartbeatRate} />
       <TextInput placeholder="Condition" value={condition} onChangeText={setCondition} />
       <Button title="Update Record" onPress={addRecord} />
       {error ? <Text style={styles.errorText}>{error}</Text> : null}

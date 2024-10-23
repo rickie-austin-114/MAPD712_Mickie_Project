@@ -8,10 +8,10 @@ const ViewRecordScreen = ({ route }) => {
   return (
     <View style={styles.container}>
       <Text>Name: {patient.name}</Text>
-      <Text>Blood Pressure: {patient.bloodPressure}</Text>
-      <Text>Respiratory Rate: {patient.respiratoryRate}</Text>
-      <Text>Blood Oxygen Level: {patient.bloodOxygenLevel}</Text>
-      <Text>Heartbeat Rate: {patient.heartbeatRate}</Text>
+      <Text>Blood Pressure: {patient.bloodPressure} mmHg</Text>
+      <Text>Respiratory Rate: {patient.respiratoryRate} / min</Text>
+      <Text>Blood Oxygen Level: {patient.bloodOxygenLevel} %</Text>
+      <Text>Heartbeat Rate: {patient.heartbeatRate} / min</Text>
       <Text>Condition: {patient.condition}</Text>
     </View>
   );
