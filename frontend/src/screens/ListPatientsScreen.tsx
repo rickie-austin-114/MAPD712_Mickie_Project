@@ -1,6 +1,6 @@
 // src/screens/ListPatientsScreen.tsx
 import React, { useEffect, useState } from 'react';
-import { View, Text, Button, FlatList, StyleSheet, Alert, Platform } from 'react-native';
+import { View, Text, Button, FlatList, StyleSheet, Alert, Platform, Pressable } from 'react-native';
 import axios from 'axios';
 
 const ListPatientsScreen = ({ navigation }) => {
@@ -39,8 +39,12 @@ const ListPatientsScreen = ({ navigation }) => {
         renderItem={({ item }) => (
           <View style={styles.patientContainer}>
             <Text>{item.name}</Text>
-            <Button title="View Profile" onPress={() => viewProfile(item)} />
-            <Button title="View Record" onPress={() => viewRecord(item)} />
+            <Pressable style={styles.button} onPress={() => viewProfile(item)}> 
+              <Text>View Profile</Text>
+            </Pressable>
+            <Pressable style={styles.button} onPress={() => viewRecord(item)}> 
+              <Text>View Record</Text>
+            </Pressable>
           </View>
         )}
       />
@@ -58,6 +62,15 @@ const styles = StyleSheet.create({
   },
   patientContainer: {
     marginVertical: 10,
+  },
+  button: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    borderRadius: 4,
+    elevation: 3,
+    backgroundColor: 'black',
   },
 });
 
