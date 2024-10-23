@@ -10,6 +10,8 @@ const MenuScreen = ({ navigation }) => {
       <Button title="Add Record" onPress={() => navigation.navigate('AddRecord')} />
       <Text />
       <Button title="List Patients" onPress={() => navigation.navigate('ListPatients')} />
+      <Text />
+      <Button title="List Critical Patients" onPress={() => navigation.navigate('ListCritical')} />
     </View>
   );
 };
