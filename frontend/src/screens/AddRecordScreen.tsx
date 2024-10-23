@@ -12,7 +12,7 @@ const AddRecordScreen = ({ navigation }) => {
   const [condition, setCondition] = useState('Normal');
   const [error, setError] = useState('');
 
-  const backendURL = Platform.OS === "android" ? "http://10.0.2.2:5000/" : "http://localhost:5000/"
+  const backendURL = Platform.OS === "android" ? "http://10.0.2.2:5001/" : "http://localhost:5001/"
 
   const addRecord = async () => {
     try {
