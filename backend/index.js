@@ -5,6 +5,11 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
+const User = require('./models/User'); // Assuming you'll create a User model
+const Patient = require("./models/Patient")
+const jwt = require('jsonwebtoken');
+const bcrypt = require("bcrypt")
+
 const app = express();
 const PORT = process.env.PORT || 5001;
 
@@ -17,23 +22,27 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTop
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.error('MongoDB connection error:', err));
 
-// Patient schema
-const patientSchema = new mongoose.Schema({
-  name: { type: String, required: true, unique: true },
-  age: { type: Number, default: null },
-  gender: { type: String, default: null },
-  address: { type: String, default: null },
-  zipCode: { type: String, default: null },
-  profilePicture: { type: String, default: null },
-  bloodPressure: { type: String, default: null },
-  respiratoryRate: { type: String, default: null },
-  bloodOxygenLevel: { type: String, default: null },
-  heartbeatRate: { type: String, default: null },
-  condition: { type: String, enum: ['Normal', 'Critical'], default: null }, // Add condition field
-  updatedAt: { type: Date, default: Date.now },
-});
 
-const Patient = mongoose.model('Patient', patientSchema);
+
+
+    app.post('/api/register', async (req, res) => {
+        const { name, introduction, email, password } = req.body;
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const user = new User({ name, introduction, email, password: hashedPassword });
+        await user.save();
+        res.status(201).json({ message: 'User registered!' });
+    });
+  
+  // User login
+  app.post('/api/login', async (req, res) => {
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
+    if (!user || !(await bcrypt.compare(password, user.password))) {
+      return res.status(401).json({ message: 'Invalid credentials' });
+    }
+    const token = jwt.sign({ id: user._id }, 'your_jwt_secret', { expiresIn: '1h' });
+    res.json({ token });
+  });
 
 // Endpoints
 
