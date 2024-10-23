@@ -38,14 +38,16 @@ const ListPatientsScreen = ({ navigation }) => {
         keyExtractor={(item) => item.name}
         renderItem={({ item }) => (
           <View style={styles.patientContainer}>
-            <Text>{item.name}</Text>
+            <Text style={styles.patientText}>{item.name}</Text>
+            <View style={styles.buttonContainer}>
             <Pressable style={styles.button} onPress={() => viewProfile(item)}> 
-              <Text>View Profile</Text>
+              <Text style={styles.buttonText}>View Profile</Text>
             </Pressable>
             <Pressable style={styles.button} onPress={() => viewRecord(item)}> 
-              <Text>View Record</Text>
+              <Text style={styles.buttonText}>View Record</Text>
             </Pressable>
-          </View>
+            </View>
+            </View>
         )}
       />
     </View>
@@ -60,6 +62,8 @@ const styles = StyleSheet.create({
   errorText: {
     color: 'red',
   },
+  patientText: {
+fontSize: 24  },
   patientContainer: {
     marginVertical: 10,
   },
@@ -70,7 +74,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: 32,
     borderRadius: 4,
     elevation: 3,
-    backgroundColor: 'black',
+    width: 150,
+    height: 50,
+    backgroundColor: '#ADDFFF',
+  },
+  buttonText: {
+    color: "white"
+  },
+  buttonContainer: {
+    flex: 1,
+    flexDirection: 'row', // Aligns children horizontally
+    justifyContent: 'space-around', // Adjusts spacing between buttons
+    alignItems: 'center', // Centers buttons vertically
   },
 });
 
