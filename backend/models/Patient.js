@@ -1,19 +1,31 @@
-// models/Patient.js
-const mongoose = require('mongoose');
-// Patient schema
+import mongoose from 'mongoose';
+
 const patientSchema = new mongoose.Schema({
-  name: { type: String, required: true, unique: true },
-  age: { type: Number, default: null },
-  gender: { type: String, default: null },
-  address: { type: String, default: null },
-  zipCode: { type: String, default: null },
-  profilePicture: { type: String, default: null },
-  bloodPressure: { type: String, default: null },
-  respiratoryRate: { type: String, default: null },
-  bloodOxygenLevel: { type: String, default: null },
-  heartbeatRate: { type: String, default: null },
-  condition: { type: String, enum: ['Normal', 'Critical'], default: null }, // Add condition field
-  updatedAt: { type: Date, default: Date.now },
+  name: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  age: {
+    type: Number,
+    required: true
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true
+  },
+  phone: {
+    type: String,
+    required: true
+  },
+  address: String,
+  gender: {
+    type: String,
+    enum: ['Male', 'Female', 'Other']
+  },
+  dateOfBirth: Date,
 });
 
-module.exports = mongoose.model('Patient', patientSchema);
+const Patient = mongoose.model('Patient', patientSchema);
+export default Patient;
