@@ -10,6 +10,7 @@ const AddPatientScreen = ({ navigation }) => {
   const [address, setAddress] = useState('');
   const [zipCode, setZipCode] = useState('');
   const [error, setError] = useState('');
+  const [profilePicture, setProfilePicture] = useState('');
 
   const backendURL = Platform.OS === "android" ? "http://10.0.2.2:5001/" : "http://localhost:5001/"
 
@@ -22,6 +23,7 @@ const AddPatientScreen = ({ navigation }) => {
         gender,
         address,
         zipCode,
+        profilePicture,
       });
       Alert.alert('Success', 'Patient added successfully');
       navigation.goBack();
@@ -37,6 +39,8 @@ const AddPatientScreen = ({ navigation }) => {
       <TextInput placeholder="Gender" value={gender} onChangeText={setGender} />
       <TextInput placeholder="Address" value={address} onChangeText={setAddress} />
       <TextInput placeholder="Zip Code" value={zipCode} onChangeText={setZipCode} />
+      <TextInput placeholder="Profile Image Link" value={profilePicture} onChangeText={setProfilePicture} />
+
       <Button title="Add Patient" onPress={addPatient} />
       {error ? <Text style={styles.errorText}>{error}</Text> : null}
     </View>

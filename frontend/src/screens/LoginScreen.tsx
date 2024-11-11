@@ -20,9 +20,18 @@ const LoginScreen = ({ navigation }) => {
       // Store token and navigate to Account
       const token = response.data.token;
       // You might want to store the token using AsyncStorage for later use
-      navigation.navigate('Menu', { token });
+      navigation.navigate('ListPatients', { token });
     } catch (error) {
       Alert.alert('Login Failed', error.response.data.message);
+    }
+  };
+
+  const handleRegister = async () => {
+    try {
+      // You might want to store the token using AsyncStorage for later use
+      navigation.navigate('Register');
+    } catch (error) {
+      Alert.alert('Error', error.response.data.message);
     }
   };
 
@@ -31,6 +40,8 @@ const LoginScreen = ({ navigation }) => {
       <TextInput placeholder="Email" value={email} onChangeText={setEmail} />
       <TextInput placeholder="Password" value={password} onChangeText={setPassword} secureTextEntry />
       <Button title="Login" onPress={handleLogin} />
+      <Button title="Register" onPress={handleRegister} />
+
     </View>
   );
 };
