@@ -260,30 +260,40 @@ app.get('/api/record/:id', async (req, res) => {
     }}
   );
   
-
+// add record
 app.post("/api/record", async (req, res) => {
   try {
     const { measurementDate, patient, datatype, readingValue } = req.body;
 
     if (!patient || !datatype || !readingValue) {
       return res.status(400).json({ message: "invalid input" });
-    } else {
+    } 
       if (datatype == "blood pressure") {
         if (readingValue < 0 || readingValue > 500) {
           return res.status(400).json({ message: "invalid input" });
-        } else if (datatype == "respiratory rate") {
+        } 
+      }
+        else if (datatype == "respiratory rate") {
           if (readingValue < 0 || readingValue > 90) {
             return res.status(400).json({ message: "invalid input" });
           }
-        } else if (datatype == "blood oxygen level") {
+        } 
+        
+        else if (datatype == "blood oxygen level") {
           if (readingValue < 10 || readingValue > 100) {
             return res.status(400).json({ message: "invalid input" });
           }
-        } else if (datatype == "heart beat rate") {
+        } 
+        
+        else if (datatype == "heart beat rate") {
           if (readingValue < 0 || readingValue > 500) {
             return res.status(400).json({ message: "invalid input" });
           }
-        } else {
+        } 
+        
+        else {
+          return res.status(400).json({ message: "invalid input" });
+        }
           const patientRecord = new PatientRecord({
             measurementDate,
             patient,
@@ -292,11 +302,11 @@ app.post("/api/record", async (req, res) => {
           });
           const savedPatientRecord = await patientRecord.save();
           return res.status(201).json(savedPatientRecord);
-        }
-      }
-
-
-    }
+    
+    
+    
+  
+    
   } catch (err) {
     if (err.code === 11000) {
       return res.status(400).json({ message: "Invalid input" });
