@@ -10,15 +10,35 @@ import {
   Platform,
   Pressable,
   Switch,
+  ScrollView, 
+  TouchableOpacity, 
+  Image
 } from "react-native";
 import axios from "axios";
 import { useIsFocused } from '@react-navigation/native';
+import "../../global.css";
+
+import { SafeAreaView } from "react-native-safe-area-context";
+import { LinearGradient } from "expo-linear-gradient";
+import {
+  ArrowDownTrayIcon,
+  Bars3CenterLeftIcon,
+  BellIcon,
+  GlobeAmericasIcon,
+  InformationCircleIcon,
+  UserCircleIcon,
+} from "react-native-heroicons/solid";
+import { withDecay } from "react-native-reanimated";
+import { storeColors } from "../theme";
 
 const ListPatientsScreen = ({ navigation }) => {
   const [patients, setPatients] = useState([]);
   const [error, setError] = useState("");
   const [listCritical, setListCritical] = useState(false);
   const isFocused = useIsFocused();
+
+  const categories = ["All", "Critical"];
+  const [activeCategory, setActiveCategory] = useState("All");
 
 
   const backendURL =
@@ -28,7 +48,7 @@ const ListPatientsScreen = ({ navigation }) => {
 
   const fetchPatients = async () => {
     try {
-      if (listCritical === false) {
+      if (activeCategory === "All") {
         const response = await axios.get(`${backendURL}api/patients`);
         setPatients(response.data);
       } else {
@@ -47,7 +67,7 @@ const ListPatientsScreen = ({ navigation }) => {
 
   useEffect(() => {
     fetchPatients();
-  }, [listCritical, isFocused]);
+  }, [activeCategory, isFocused]);
 
   const viewProfile = (patient) => {
     navigation.navigate("ViewProfile", { patient });
@@ -66,63 +86,193 @@ const ListPatientsScreen = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
-      {error ? <Text style={styles.errorText}>{error}</Text> : null}
+    // <View style={styles.container}>
+    //   
 
-      <View style={styles.menuContainer}>
-        <Pressable style={styles.button} onPress={() => addPatient()}>
-          <Text style={styles.buttonText}>Add Patient</Text>
-        </Pressable>
-        <Text>Show Critical Only:</Text>
-        <Switch
-           trackColor={{ false: "#767577", true: "#81b0ff" }}
-           thumbColor={listCritical ? "#f5dd4b" : "#f4f3f4"}
-          onValueChange={toggleSwitch}
-          value={listCritical}
-        />
-      </View>
+    //   <View style={styles.menuContainer}>
+    //     <Pressable style={styles.button} onPress={() => addPatient()}>
+    //       <Text style={styles.buttonText}>Add Patient</Text>
+    //     </Pressable>
+    //     <Text>Show Critical Only:</Text>
+    //     <Switch
+    //        trackColor={{ false: "#767577", true: "#81b0ff" }}
+    //        thumbColor={listCritical ? "#f5dd4b" : "#f4f3f4"}
+    //       onValueChange={toggleSwitch}
+    //       value={listCritical}
+    //     />
+    //   </View>
 
-      <Text></Text>
+    //   <Text></Text>
 
-      <FlatList
-        data={patients}
-        keyExtractor={(item) => item._id}
-        renderItem={({ item }) => (
-          <View>
-            <View
-              style={{
-                backgroundColor:
-                  item.condition === "Critical" ? "#ff474c" : "#ffffff",
-              }}
-            >
-              <Text style={styles.patientText}>{item.name}</Text>
-              <View style={styles.buttonContainer}>
-                <Pressable
-                  style={styles.button}
-                  onPress={() => viewProfile(item)}
-                >
-                  <Text style={styles.buttonText}>View Profile</Text>
-                </Pressable>
-                <Pressable
-                  style={styles.button}
-                  onPress={() => editProfile(item)}
-                >
-                  <Text style={styles.buttonText}>Edit Profile</Text>
-                </Pressable>
-                <Pressable
-                  style={styles.button}
-                  onPress={() => addRecord(item)}
-                >
-                  <Text style={styles.buttonText}>Add Record</Text>
-                </Pressable>
-              </View>
-              <Text> </Text>
-            </View>
-            <Text> </Text>
+    //   <FlatList
+    //     data={patients}
+    //     keyExtractor={(item) => item._id}
+    //     renderItem={({ item }) => (
+    //       <View>
+    //         <View
+    //           style={{
+    //             backgroundColor:
+    //               item.condition === "Critical" ? "#ff474c" : "#ffffff",
+    //           }}
+    //         >
+    //           <Text style={styles.patientText}>{item.name}</Text>
+    //           <View style={styles.buttonContainer}>
+    //             <Pressable
+    //               style={styles.button}
+    //               onPress={() => viewProfile(item)}
+    //             >
+    //               <Text style={styles.buttonText}>View Profile</Text>
+    //             </Pressable>
+    //             <Pressable
+    //               style={styles.button}
+    //               onPress={() => editProfile(item)}
+    //             >
+    //               <Text style={styles.buttonText}>Edit Profile</Text>
+    //             </Pressable>
+    //             <Pressable
+    //               style={styles.button}
+    //               onPress={() => addRecord(item)}
+    //             >
+    //               <Text style={styles.buttonText}>Add Record</Text>
+    //             </Pressable>
+    //           </View>
+    //           <Text> </Text>
+    //         </View>
+    //         <Text> </Text>
+    //       </View>
+    //     )}
+    //   />
+    // </View>
+
+<LinearGradient
+      colors={["rgba(58, 131, 244, 0.4)", "rgba(9, 181, 211, 0.4)"]}
+      className="w-full flex-1"
+    >
+        <View className="container">
+          <View className="flex-row justify-between items-center px-4">
+            <Bars3CenterLeftIcon color={storeColors.text} size="30" />
+            <BellIcon color={storeColors.text} size="30" />
           </View>
-        )}
-      />
-    </View>
+        </View>
+        <View className="mt-3">
+          <Text
+            style={{ color: storeColors.text }}
+            className="ml-4 text-3xl font-bold"
+          >
+            Browse Patients
+          </Text>
+        </View>
+
+        <View className="pl-4">
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            {categories.map((cat) => {
+              if (cat == activeCategory) {
+                return (
+                  // <GradientButton key={cat} containerClass="mr-2" value={cat} />
+                  <TouchableOpacity
+                    onPress={() => setActiveCategory(cat)}
+                    key={cat}
+                    className="bg-blue-400 p-3 px-4 rounded-full mr-2"
+                  >
+                    <Text>{cat}</Text>
+                  </TouchableOpacity>
+                );
+              } else {
+                return (
+                  <TouchableOpacity
+                    onPress={() => setActiveCategory(cat)}
+                    key={cat}
+                    className="bg-blue-200 p-3 px-4 rounded-full mr-2"
+                  >
+                    <Text>{cat}</Text>
+                  </TouchableOpacity>
+                );
+              }
+
+            })}
+                    <TouchableOpacity
+                    onPress={() => {addPatient()}}
+                    className="bg-blue-600 p-3 px-4 rounded-full mr-2"
+                  >
+                    <Text>Add Patient</Text>
+                  </TouchableOpacity>
+          </ScrollView>
+        </View>
+        <Text> </Text>
+        {error ? <Text style={styles.errorText}>{error}</Text> : null}
+        <ScrollView
+          style={{ height: 700 }}
+          showsVerticalScrollIndicator={false}
+        >
+          {patients.map((patient, index) => {
+            let bg =
+              patient.condition == "Critical"
+                ? "rgba(192, 132, 252,0.4)"
+                : "rgba(255,255,255,0.4)";
+
+            return (
+              <TouchableOpacity
+                style={{ backgroundColor: bg }}
+                className="mx-4 p-2 mb-2 flex-row rounded-3xl"
+                key={index}
+              >
+                <Image
+                  source={{ uri: patient.profilePicture }}
+                  style={{ width: 80, height: 80 }}
+                  className="rounded-2xl"
+                />
+                <View className="flex-1 flex justify-center pl-3 space-y-3">
+                  <Text
+                    style={{ color: storeColors.text }}
+                    className="font-semibold"
+                  >
+                    {patient.name}
+                  </Text>
+                  <View className="flex-row space-x-3">
+                    <View className="flex-row space-x-1">
+                      <InformationCircleIcon
+                        size="15"
+                        className="text-blue-500"
+                      />
+
+                      <Text className="text-xs text-gray-700">
+                        Age: {patient.age}
+                      </Text>
+                    </View>
+                    <View className="flex-row space-x-1">
+                      <UserCircleIcon size="15" className="text-blue-500" />
+                      <Text className="text-xs text-gray-700">
+                        Gender: {patient.gender}
+                      </Text>
+                    </View>
+                  </View>
+                </View>
+                <View className="flex justify-center items-center">
+                  <TouchableOpacity
+                    onPress={() => {viewProfile(patient)}}
+                    className="bg-blue-400 p-2 px-4 rounded-full mr-2"
+                  >
+                    <Text>View Profile</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    onPress={() => {editProfile(patient)}}
+                    className="bg-blue-400 p-2 px-4 rounded-full mr-2"
+                  >
+                    <Text>Edit Profile</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => {addRecord(patient)}}
+                    className="bg-blue-400 p-2 px-4 rounded-full mr-2"
+                  >
+                    <Text>Add Record</Text>
+                  </TouchableOpacity>
+                </View>
+              </TouchableOpacity>
+            );
+          })}
+        </ScrollView>
+</LinearGradient>
   );
 };
 

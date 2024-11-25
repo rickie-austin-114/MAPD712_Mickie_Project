@@ -9,8 +9,13 @@ import {
   FlatList,
   Platform,
   Pressable,
+  Alert,
 } from "react-native";
 import { logToLogBoxAndConsole } from "react-native-reanimated/lib/typescript/logger";
+import "../../global.css";
+import { storeColors } from "../theme";
+import { SafeAreaView } from "react-native-safe-area-context";
+
 
 const ViewProfileScreen = ({ route, navigation }) => {
   const { patient } = route.params;

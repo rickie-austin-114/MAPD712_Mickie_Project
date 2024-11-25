@@ -11,6 +11,7 @@ import ListCriticalScreen from './src/screens/ListCriticalScreen';
 import LoginScreen from './src/screens/LoginScreen';
 import RegisterScreen from './src/screens/RegisterScreen';
 import EditProfileScreen from './src/screens/EditProfile'
+import "./global.css"
 
 const Stack = createNativeStackNavigator();
 

@@ -9,8 +9,13 @@ import {
   Alert,
   Platform,
   TouchableOpacity,
+  Pressable,
+  Image,
 } from "react-native";
 import axios from "axios";
+import "../../global.css";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { storeColors } from "../theme";
 
 const AddRecordScreen = ({ route, navigation }) => {
   const { patient } = route.params;
@@ -48,32 +53,59 @@ const AddRecordScreen = ({ route, navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.radioContainer}>
-        {options.map((option) => (
-          <TouchableOpacity
-            key={option.value}
-            style={styles.radioButton}
-            onPress={() => setSelectedOption(option.value)}
-          >
-            <View
-              style={[
-                styles.radioCircle,
-                selectedOption === option.value && styles.selectedRadioCircle,
-              ]}
-            />
-            <Text style={styles.radioLabel}>{option.label}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
 
-      <TextInput
-        placeholder="Value"
-        value={readingValue}
-        onChangeText={setReadingValue}
-      />
-      <Button title="Add Record" onPress={addRecord} />
-      {error ? <Text style={styles.errorText}>{error}</Text> : null}
+    <View
+      className="flex-1 bg-white"
+      style={{ backgroundColor: storeColors.bg }}
+    >
+      <SafeAreaView className="flex">
+        <View className="flex-row justify-center">
+          <Image
+            source={require("../assets/sencare.png")}
+            style={{ width: 350, height: 100, resizeMode: "stretch" }}
+          />
+        </View>
+      </SafeAreaView>
+      <View
+        className="flex-1 bg-white px-8 pt-8"
+        style={{ borderTopLeftRadius: 50, borderTopRightRadius: 50 }}
+      >
+        <View style={styles.radioContainer}>
+          {options.map((option) => (
+            <TouchableOpacity
+              key={option.value}
+              style={styles.radioButton}
+              onPress={() => setSelectedOption(option.value)}
+            >
+              <View
+                style={[
+                  styles.radioCircle,
+                  selectedOption === option.value && styles.selectedRadioCircle,
+                ]}
+              />
+              <Text style={styles.radioLabel}>{option.label}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+        <Text
+          className="text-gray-900 ml-4"
+          style={{ fontSize: 40, fontWeight: "bold" }}
+        >
+          Add Record
+        </Text>
+
+        <Text className="text-gray-700 ml-4">Value</Text>
+        <TextInput
+          className="p-4 bg-gray-100 text-gray-700 rounded-2xl mb-3"
+          placeholder="Value"
+          value={readingValue}
+          onChangeText={setReadingValue}
+        />
+
+        <Pressable onPress={addRecord} style={styles.button}>
+          <Text style={styles.text}>Add Record</Text>
+        </Pressable>
+      </View>
     </View>
   );
 };
@@ -111,6 +143,19 @@ const styles = StyleSheet.create({
     backgroundColor: "#000",
   },
   radioLabel: {
+    fontSize: 16,
+  },
+  button: {
+    backgroundColor: "#6200ee",
+    padding: 10,
+    borderRadius: 5,
+    alignItems: "center",
+  },
+  buttonPressed: {
+    backgroundColor: "#3700b3",
+  },
+  text: {
+    color: "white",
     fontSize: 16,
   },
 });
