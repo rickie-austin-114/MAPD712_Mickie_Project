@@ -86,63 +86,7 @@ const ListPatientsScreen = ({ navigation }) => {
   };
 
   return (
-    // <View style={styles.container}>
-    //   
 
-    //   <View style={styles.menuContainer}>
-    //     <Pressable style={styles.button} onPress={() => addPatient()}>
-    //       <Text style={styles.buttonText}>Add Patient</Text>
-    //     </Pressable>
-    //     <Text>Show Critical Only:</Text>
-    //     <Switch
-    //        trackColor={{ false: "#767577", true: "#81b0ff" }}
-    //        thumbColor={listCritical ? "#f5dd4b" : "#f4f3f4"}
-    //       onValueChange={toggleSwitch}
-    //       value={listCritical}
-    //     />
-    //   </View>
-
-    //   <Text></Text>
-
-    //   <FlatList
-    //     data={patients}
-    //     keyExtractor={(item) => item._id}
-    //     renderItem={({ item }) => (
-    //       <View>
-    //         <View
-    //           style={{
-    //             backgroundColor:
-    //               item.condition === "Critical" ? "#ff474c" : "#ffffff",
-    //           }}
-    //         >
-    //           <Text style={styles.patientText}>{item.name}</Text>
-    //           <View style={styles.buttonContainer}>
-    //             <Pressable
-    //               style={styles.button}
-    //               onPress={() => viewProfile(item)}
-    //             >
-    //               <Text style={styles.buttonText}>View Profile</Text>
-    //             </Pressable>
-    //             <Pressable
-    //               style={styles.button}
-    //               onPress={() => editProfile(item)}
-    //             >
-    //               <Text style={styles.buttonText}>Edit Profile</Text>
-    //             </Pressable>
-    //             <Pressable
-    //               style={styles.button}
-    //               onPress={() => addRecord(item)}
-    //             >
-    //               <Text style={styles.buttonText}>Add Record</Text>
-    //             </Pressable>
-    //           </View>
-    //           <Text> </Text>
-    //         </View>
-    //         <Text> </Text>
-    //       </View>
-    //     )}
-    //   />
-    // </View>
 
 <LinearGradient
       colors={["rgba(58, 131, 244, 0.4)", "rgba(9, 181, 211, 0.4)"]}
