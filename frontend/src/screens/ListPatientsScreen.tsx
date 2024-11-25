@@ -145,7 +145,7 @@ const ListPatientsScreen = ({ navigation }) => {
         <Text> </Text>
         {error ? <Text style={styles.errorText}>{error}</Text> : null}
         <ScrollView
-          style={{ height: 700 }}
+          style={{ height: 550 }}
           showsVerticalScrollIndicator={false}
         >
           {patients.map((patient, index) => {
@@ -216,6 +216,22 @@ const ListPatientsScreen = ({ navigation }) => {
             );
           })}
         </ScrollView>
+        <Text> </Text>
+        <Text> </Text>
+        <Text> </Text>
+        <Text> </Text>
+        <Text> </Text>
+        <Text> </Text>
+        <Text> </Text>
+        <Text> </Text>
+        <Text> </Text>
+        <Text> </Text>
+        <Text> </Text>
+        <Text> </Text>
+        <Text> </Text>
+        <Text> </Text>
+        <Text> </Text>
+        <Text> </Text>
 </LinearGradient>
   );
 };
