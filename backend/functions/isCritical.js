@@ -19,6 +19,12 @@ export async function isCritical(id) {
     const heartBeatRateRecord = await PatientRecord.findOne({ patient: id, datatype: 'heart beat rate' })
       .sort({ measurementDate: -1 });
 
+      console.log(bloodPressureRecord)
+      console.log(bloodOxygenRecord)
+      console.log(respiratoryRateRecord)
+      console.log(heartBeatRateRecord)
+    
+
     // Default to normal if no records are found
     let isCritical = false;
 

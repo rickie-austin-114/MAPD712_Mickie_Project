@@ -126,7 +126,7 @@ const ViewProfileScreen = ({ route, navigation }) => {
         </Text>
       </View>
 
-      <ScrollView style={{ height: 700 }} showsVerticalScrollIndicator={false}>
+      <ScrollView style={{ height: 300 }} showsVerticalScrollIndicator={false}>
         {records.map((record, index) => {
           let bg = "rgba(255,255,255,0.4)";
           return (

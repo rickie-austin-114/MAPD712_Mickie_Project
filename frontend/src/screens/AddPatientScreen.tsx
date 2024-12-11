@@ -79,7 +79,7 @@ const AddPatientScreen = ({ navigation }) => {
           className="text-gray-900 ml-4"
           style={{ fontSize: 40, fontWeight: "bold" }}
         >
-          Register
+          Add Patient
         </Text>
 
         <Text className="text-gray-700 ml-4">Name</Text>

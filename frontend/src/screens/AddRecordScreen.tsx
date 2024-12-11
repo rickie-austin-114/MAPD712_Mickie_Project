@@ -94,6 +94,7 @@ const AddRecordScreen = ({ route, navigation }) => {
           Add Record
         </Text>
 
+
         <Text className="text-gray-700 ml-4">Value</Text>
         <TextInput
           className="p-4 bg-gray-100 text-gray-700 rounded-2xl mb-3"
@@ -105,6 +106,9 @@ const AddRecordScreen = ({ route, navigation }) => {
         <Pressable onPress={addRecord} style={styles.button}>
           <Text style={styles.text}>Add Record</Text>
         </Pressable>
+        <Text style={styles.errorText}>
+          {error}
+        </Text>
       </View>
     </View>
   );

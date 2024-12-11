@@ -119,13 +119,8 @@ app.post("/api/login", async (req, res) => {
 app.get("/api/patients", async (req, res) => {
   try {
     const patients = await Patient.find();
-    const patientList = patients.map(patient => patient.toObject())
 
-    for (let i = 0; i < patients.length; i++) {
-      const crit = await isCritical(patientList[i]["_id"]);
-      patientList[i]["condition"] = crit;
-    }
-    res.json(patientList);
+    res.json(patients);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -150,21 +145,9 @@ app.get("/api/patients/:id", async (req, res) => {
 app.get("/api/critical", async (req, res) => {
   try {
 
-    const patients = await Patient.find();
-    const patientList = patients.map(patient => patient.toObject())
+    const patients = await Patient.find({ condition: "Critical" });
 
-    for (let i = 0; i < patients.length; i++) {
-      const crit = await isCritical(patientList[i]["_id"]);
-      patientList[i]["condition"] = crit;
-    }
-
-    const criticalList = []
-    for (let i = 0; i < patientList.length; i++) {
-      if (patientList[i]["condition"] === "Critical"){
-        criticalList.push(patientList[i]);
-      }
-    }
-    res.json(criticalList);
+    res.json(patients);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -224,6 +207,27 @@ app.put("/api/patients/:id", async (req, res) => {
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
+});
+
+
+// POST a new patient
+app.delete("/api/patients/:id", async (req, res) => {
+
+  try {
+  const result = await Patient.findByIdAndDelete(req.params.id);
+  if (result) {
+    return res.status(200).json({"message": `Successfully deleted patient with id`});
+  } else {
+    return res.status(400).json({"error": "patient not found"})
+  }
+
+
+
+  } catch (error) {
+    return res.status(400).json({"error": "error"})
+  }
+  return res.status(400).json({"error": "patient not found"})
+
 });
 
 // GET all patients record
@@ -301,6 +305,21 @@ app.post("/api/record", async (req, res) => {
             readingValue,
           });
           const savedPatientRecord = await patientRecord.save();
+
+          const condition = await isCritical(patient);
+          console.log(condition)
+          console.log(patient)
+
+
+
+          const updatedPatient = await Patient.findOneAndUpdate(
+            { _id: patient },
+            {condition},
+            { new: true, runValidators: true }
+          );
+
+          console.log(updatedPatient)
+
           return res.status(201).json(savedPatientRecord);
     
     

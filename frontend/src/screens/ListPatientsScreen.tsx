@@ -85,6 +85,12 @@ const ListPatientsScreen = ({ navigation }) => {
     navigation.navigate("AddPatient");
   };
 
+  const deletePatient = async (patient) => {
+    const response = await axios.delete(`${backendURL}api/patients/${patient._id}`);
+    fetchPatients()
+  }
+
+
   return (
 
 
@@ -183,13 +189,14 @@ const ListPatientsScreen = ({ navigation }) => {
                         Age: {patient.age}
                       </Text>
                     </View>
-                    <View className="flex-row space-x-1">
+
+                  </View>
+                  <View className="flex-row space-x-1">
                       <UserCircleIcon size="15" className="text-blue-500" />
                       <Text className="text-xs text-gray-700">
                         Gender: {patient.gender}
                       </Text>
                     </View>
-                  </View>
                 </View>
                 <View className="flex justify-center items-center">
                   <TouchableOpacity
@@ -211,6 +218,14 @@ const ListPatientsScreen = ({ navigation }) => {
                   >
                     <Text>Add Record</Text>
                   </TouchableOpacity>
+
+                  <TouchableOpacity
+                    onPress={() => {deletePatient(patient)}}
+                    className="bg-blue-400 p-2 px-4 rounded-full mr-2"
+                  >
+                    <Text>Delete Record</Text>
+                  </TouchableOpacity>
+
                 </View>
               </TouchableOpacity>
             );

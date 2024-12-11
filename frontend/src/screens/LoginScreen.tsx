@@ -7,13 +7,10 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { storeColors } from "../theme";
 
 
-
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
   const baseURL = Platform.OS === 'android' ? 'http://10.0.2.2:5001/' : 'http://localhost:5001/'
-
 
   const handleLogin = async () => {
     try {

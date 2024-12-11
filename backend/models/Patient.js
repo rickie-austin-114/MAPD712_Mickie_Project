@@ -8,6 +8,7 @@ const patientSchema = new mongoose.Schema({
   address: { type: String, default: null },
   zipCode: { type: String, default: null },
   profilePicture: { type: String, default: null },
+  condition: { type: String, default: "Normal" },
   updatedAt: { type: Date, default: Date.now }
 });
 
