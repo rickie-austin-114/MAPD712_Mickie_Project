@@ -12,7 +12,8 @@ import {
   Switch,
   ScrollView, 
   TouchableOpacity, 
-  Image
+  Image,
+  TextInput
 } from "react-native";
 import axios from "axios";
 import { useIsFocused } from '@react-navigation/native';
@@ -35,6 +36,8 @@ const ListPatientsScreen = ({ navigation }) => {
   const [patients, setPatients] = useState([]);
   const [error, setError] = useState("");
   const [listCritical, setListCritical] = useState(false);
+  const [search, setSearch] = useState("");
+
   const isFocused = useIsFocused();
 
   const categories = ["All", "Critical"];
@@ -113,6 +116,11 @@ const ListPatientsScreen = ({ navigation }) => {
           </Text>
         </View>
 
+        <TextInput
+        className="p-4 bg-gray-100 text-gray-700 rounded-2xl mb-3"
+        placeholder="search" value={search} onChangeText={setSearch}
+      />
+
         <View className="pl-4">
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             {categories.map((cat) => {
@@ -159,7 +167,7 @@ const ListPatientsScreen = ({ navigation }) => {
               patient.condition == "Critical"
                 ? "rgba(192, 132, 252,0.4)"
                 : "rgba(255,255,255,0.4)";
-
+            if (patient.name.startsWith(search)){
             return (
               <TouchableOpacity
                 style={{ backgroundColor: bg }}
@@ -228,7 +236,9 @@ const ListPatientsScreen = ({ navigation }) => {
 
                 </View>
               </TouchableOpacity>
-            );
+            );} else {
+              return (<></>)
+            }
           })}
         </ScrollView>
         <Text> </Text>

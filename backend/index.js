@@ -11,8 +11,6 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const PatientRecord = require("./models/PatientRecord");
 
-
-
 const app = express();
 const PORT = process.env.PORT || 5001;
 const SECRET = process.env.SECRET || "093rhufbigeryq3498rweihougotyhpq39reouwh";
@@ -24,20 +22,26 @@ app.use(cors());
 app.use(bodyParser.json());
 
 async function isCritical(id) {
-
-
   // Check if the patient exists
   const patient = await Patient.findById(id);
 
   // Fetch the latest records for blood pressure and blood oxygen level
-  const bloodPressureRecord = await PatientRecord.findOne({ patient: id, datatype: 'blood pressure' })
-    .sort({ measurementDate: -1 });
-  const bloodOxygenRecord = await PatientRecord.findOne({ patient: id, datatype: 'blood oxygen level' })
-    .sort({ measurementDate: -1 });
-  const respiratoryRateRecord = await PatientRecord.findOne({ patient: id, datatype: 'respiratory rate' })
-    .sort({ measurementDate: -1 });
-  const heartBeatRateRecord = await PatientRecord.findOne({ patient: id, datatype: 'heart beat rate' })
-    .sort({ measurementDate: -1 });
+  const bloodPressureRecord = await PatientRecord.findOne({
+    patient: id,
+    datatype: "blood pressure",
+  }).sort({ measurementDate: -1 });
+  const bloodOxygenRecord = await PatientRecord.findOne({
+    patient: id,
+    datatype: "blood oxygen level",
+  }).sort({ measurementDate: -1 });
+  const respiratoryRateRecord = await PatientRecord.findOne({
+    patient: id,
+    datatype: "respiratory rate",
+  }).sort({ measurementDate: -1 });
+  const heartBeatRateRecord = await PatientRecord.findOne({
+    patient: id,
+    datatype: "heart beat rate",
+  }).sort({ measurementDate: -1 });
 
   // Default to normal if no records are found
   let isCritical = false;
@@ -57,7 +61,7 @@ async function isCritical(id) {
       isCritical = true;
     }
   }
-  
+
   if (respiratoryRateRecord) {
     const respiratoryRateValue = respiratoryRateRecord.readingValue;
     if (respiratoryRateValue < 12 || respiratoryRateValue > 25) {
@@ -72,13 +76,12 @@ async function isCritical(id) {
     }
   }
 
-
   if (isCritical) {
-    return "Critical"
+    return "Critical";
   } else {
-    return "Normal"
+    return "Normal";
   }
-};
+}
 
 // MongoDB connection
 mongoose
@@ -118,7 +121,13 @@ app.post("/api/login", async (req, res) => {
 // GET all patients
 app.get("/api/patients", async (req, res) => {
   try {
-    const patients = await Patient.find();
+    const search = req.query.search ?? ""
+/*
+    if (!search) {
+      search = ""
+    }
+*/
+    const patients = await Patient.find({ name: { $regex: new RegExp(`^${search}`, 'i') } }); // 'i' for case-insensitive
 
     res.json(patients);
   } catch (err) {
@@ -131,8 +140,8 @@ app.get("/api/patients/:id", async (req, res) => {
   try {
     let patient = await Patient.findOne({ _id: req.params.id });
     if (!patient) return res.status(404).json({ message: "Patient not found" });
-    patient = patient.toObject()
-    const crit = await isCritical(req.params.id)
+    patient = patient.toObject();
+    const crit = await isCritical(req.params.id);
     patient.condition = crit;
 
     res.json(patient);
@@ -141,18 +150,38 @@ app.get("/api/patients/:id", async (req, res) => {
   }
 });
 
+
+// GET a single patient by id
+app.get("/api/patients/:id", async (req, res) => {
+  try {
+
+
+    let patient = await Patient.findOne({ _id: req.params.id });
+    if (!patient) return res.status(404).json({ message: "Patient not found" });
+    patient = patient.toObject();
+    const crit = await isCritical(req.params.id);
+    patient.condition = crit;
+
+    res.json(patient);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+
 // GET all patients with condition "Critical"
 app.get("/api/critical", async (req, res) => {
   try {
 
-    const patients = await Patient.find({ condition: "Critical" });
+    let search = req.query.search ?? ""
+
+    const patients = await Patient.find({ condition: "Critical", name: { $regex: new RegExp(`^${search}`, 'i') } });
 
     res.json(patients);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 });
-
 
 // POST a new patient
 app.post("/api/patients", async (req, res) => {
@@ -209,25 +238,21 @@ app.put("/api/patients/:id", async (req, res) => {
   }
 });
 
-
 // POST a new patient
 app.delete("/api/patients/:id", async (req, res) => {
-
   try {
-  const result = await Patient.findByIdAndDelete(req.params.id);
-  if (result) {
-    return res.status(200).json({"message": `Successfully deleted patient with id`});
-  } else {
-    return res.status(400).json({"error": "patient not found"})
-  }
-
-
-
+    const result = await Patient.findByIdAndDelete(req.params.id);
+    if (result) {
+      return res
+        .status(200)
+        .json({ message: `Successfully deleted patient with id` });
+    } else {
+      return res.status(400).json({ error: "patient not found" });
+    }
   } catch (error) {
-    return res.status(400).json({"error": "error"})
+    return res.status(400).json({ error: "error" });
   }
-  return res.status(400).json({"error": "patient not found"})
-
+  return res.status(400).json({ error: "patient not found" });
 });
 
 // GET all patients record
@@ -241,29 +266,31 @@ app.get("/api/record", async (req, res) => {
 });
 
 // GET patients record by patient id
-app.get('/api/patient/record/:id', async (req, res) => {
-try {
-    const record = await PatientRecord.find({ patient: req.params.id }).populate('patient');
-    if (!record) return res.status(404).json({ message: 'Record not found' });
+app.get("/api/patient/record/:id", async (req, res) => {
+  try {
+    const record = await PatientRecord.find({
+      patient: req.params.id,
+    }).populate("patient");
+    if (!record) return res.status(404).json({ message: "Record not found" });
     res.json(record);
-    
   } catch (error) {
     res.status(500).json({ message: error.message });
-  }}
-);
+  }
+});
 
 // GET patients record by record id
-app.get('/api/record/:id', async (req, res) => {
+app.get("/api/record/:id", async (req, res) => {
   try {
-      const record = await PatientRecord.find({ _id: req.params.id }).populate('patient');
-      if (!record) return res.status(404).json({ message: 'Record not found' });
-      res.json(record);
-      
-    } catch (error) {
-      res.status(500).json({ message: error.message });
-    }}
-  );
-  
+    const record = await PatientRecord.find({ _id: req.params.id }).populate(
+      "patient"
+    );
+    if (!record) return res.status(404).json({ message: "Record not found" });
+    res.json(record);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 // add record
 app.post("/api/record", async (req, res) => {
   try {
@@ -271,61 +298,47 @@ app.post("/api/record", async (req, res) => {
 
     if (!patient || !datatype || !readingValue) {
       return res.status(400).json({ message: "invalid input" });
-    } 
-      if (datatype == "blood pressure") {
-        if (readingValue < 0 || readingValue > 500) {
-          return res.status(400).json({ message: "invalid input" });
-        } 
+    }
+    if (datatype == "blood pressure") {
+      if (readingValue < 0 || readingValue > 500) {
+        return res.status(400).json({ message: "invalid input" });
       }
-        else if (datatype == "respiratory rate") {
-          if (readingValue < 0 || readingValue > 90) {
-            return res.status(400).json({ message: "invalid input" });
-          }
-        } 
-        
-        else if (datatype == "blood oxygen level") {
-          if (readingValue < 10 || readingValue > 100) {
-            return res.status(400).json({ message: "invalid input" });
-          }
-        } 
-        
-        else if (datatype == "heart beat rate") {
-          if (readingValue < 0 || readingValue > 500) {
-            return res.status(400).json({ message: "invalid input" });
-          }
-        } 
-        
-        else {
-          return res.status(400).json({ message: "invalid input" });
-        }
-          const patientRecord = new PatientRecord({
-            measurementDate,
-            patient,
-            datatype,
-            readingValue,
-          });
-          const savedPatientRecord = await patientRecord.save();
+    } else if (datatype == "respiratory rate") {
+      if (readingValue < 0 || readingValue > 90) {
+        return res.status(400).json({ message: "invalid input" });
+      }
+    } else if (datatype == "blood oxygen level") {
+      if (readingValue < 10 || readingValue > 100) {
+        return res.status(400).json({ message: "invalid input" });
+      }
+    } else if (datatype == "heart beat rate") {
+      if (readingValue < 0 || readingValue > 500) {
+        return res.status(400).json({ message: "invalid input" });
+      }
+    } else {
+      return res.status(400).json({ message: "invalid input" });
+    }
+    const patientRecord = new PatientRecord({
+      measurementDate,
+      patient,
+      datatype,
+      readingValue,
+    });
+    const savedPatientRecord = await patientRecord.save();
 
-          const condition = await isCritical(patient);
-          console.log(condition)
-          console.log(patient)
+    const condition = await isCritical(patient);
+    console.log(condition);
+    console.log(patient);
 
+    const updatedPatient = await Patient.findOneAndUpdate(
+      { _id: patient },
+      { condition },
+      { new: true, runValidators: true }
+    );
 
+    console.log(updatedPatient);
 
-          const updatedPatient = await Patient.findOneAndUpdate(
-            { _id: patient },
-            {condition},
-            { new: true, runValidators: true }
-          );
-
-          console.log(updatedPatient)
-
-          return res.status(201).json(savedPatientRecord);
-    
-    
-    
-  
-    
+    return res.status(201).json(savedPatientRecord);
   } catch (err) {
     if (err.code === 11000) {
       return res.status(400).json({ message: "Invalid input" });
@@ -333,7 +346,6 @@ app.post("/api/record", async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
-
 
 // Start the server
 app.listen(PORT, () => {
