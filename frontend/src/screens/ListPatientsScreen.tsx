@@ -10,13 +10,13 @@ import {
   Platform,
   Pressable,
   Switch,
-  ScrollView, 
-  TouchableOpacity, 
+  ScrollView,
+  TouchableOpacity,
   Image,
-  TextInput
+  TextInput,
 } from "react-native";
 import axios from "axios";
-import { useIsFocused } from '@react-navigation/native';
+import { useIsFocused } from "@react-navigation/native";
 import "../../global.css";
 
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -28,6 +28,9 @@ import {
   GlobeAmericasIcon,
   InformationCircleIcon,
   UserCircleIcon,
+  PlusIcon,
+  PencilSquareIcon,
+  MagnifyingGlassIcon,
 } from "react-native-heroicons/solid";
 import { withDecay } from "react-native-reanimated";
 import { storeColors } from "../theme";
@@ -42,7 +45,6 @@ const ListPatientsScreen = ({ navigation }) => {
 
   const categories = ["All", "Critical"];
   const [activeCategory, setActiveCategory] = useState("All");
-
 
   const backendURL =
     Platform.OS === "android"
@@ -67,7 +69,6 @@ const ListPatientsScreen = ({ navigation }) => {
     setListCritical(!listCritical);
   };
 
-
   useEffect(() => {
     fetchPatients();
   }, [activeCategory, isFocused]);
@@ -89,85 +90,84 @@ const ListPatientsScreen = ({ navigation }) => {
   };
 
   const deletePatient = async (patient) => {
-    const response = await axios.delete(`${backendURL}api/patients/${patient._id}`);
-    fetchPatients()
-  }
-
+    const response = await axios.delete(
+      `${backendURL}api/patients/${patient._id}`
+    );
+    fetchPatients();
+  };
 
   return (
-
-
-<LinearGradient
+    <LinearGradient
       colors={["rgba(58, 131, 244, 0.4)", "rgba(9, 181, 211, 0.4)"]}
       className="w-full flex-1"
     >
-        <View className="container">
-          <View className="flex-row justify-between items-center px-4">
-            <Bars3CenterLeftIcon color={storeColors.text} size="30" />
-            <BellIcon color={storeColors.text} size="30" />
-          </View>
+      <View className="container">
+        <View className="flex-row justify-between items-center px-4">
+          <Bars3CenterLeftIcon color={storeColors.text} size="30" />
+          <BellIcon color={storeColors.text} size="30" />
         </View>
-        <View className="mt-3">
-          <Text
-            style={{ color: storeColors.text }}
-            className="ml-4 text-3xl font-bold"
-          >
-            Browse Patients
-          </Text>
-        </View>
+      </View>
+      <View className="mt-3">
+        <Text
+          style={{ color: storeColors.text }}
+          className="ml-4 text-3xl font-bold"
+        >
+          Browse Patients
+        </Text>
+      </View>
 
-        <TextInput
+      <TextInput
         className="p-4 bg-gray-100 text-gray-700 rounded-2xl mb-3"
-        placeholder="search" value={search} onChangeText={setSearch}
+        placeholder="search"
+        value={search}
+        onChangeText={setSearch}
       />
 
-        <View className="pl-4">
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            {categories.map((cat) => {
-              if (cat == activeCategory) {
-                return (
-                  // <GradientButton key={cat} containerClass="mr-2" value={cat} />
-                  <TouchableOpacity
-                    onPress={() => setActiveCategory(cat)}
-                    key={cat}
-                    className="bg-blue-400 p-3 px-4 rounded-full mr-2"
-                  >
-                    <Text>{cat}</Text>
-                  </TouchableOpacity>
-                );
-              } else {
-                return (
-                  <TouchableOpacity
-                    onPress={() => setActiveCategory(cat)}
-                    key={cat}
-                    className="bg-blue-200 p-3 px-4 rounded-full mr-2"
-                  >
-                    <Text>{cat}</Text>
-                  </TouchableOpacity>
-                );
-              }
-
-            })}
-                    <TouchableOpacity
-                    onPress={() => {addPatient()}}
-                    className="bg-blue-600 p-3 px-4 rounded-full mr-2"
-                  >
-                    <Text>Add Patient</Text>
-                  </TouchableOpacity>
-          </ScrollView>
-        </View>
-        <Text> </Text>
-        {error ? <Text style={styles.errorText}>{error}</Text> : null}
-        <ScrollView
-          style={{ height: 550 }}
-          showsVerticalScrollIndicator={false}
-        >
-          {patients.map((patient, index) => {
-            let bg =
-              patient.condition == "Critical"
-                ? "rgba(192, 132, 252,0.4)"
-                : "rgba(255,255,255,0.4)";
-            if (patient.name.startsWith(search)){
+      <View className="pl-4">
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          {categories.map((cat) => {
+            if (cat == activeCategory) {
+              return (
+                // <GradientButton key={cat} containerClass="mr-2" value={cat} />
+                <TouchableOpacity
+                  onPress={() => setActiveCategory(cat)}
+                  key={cat}
+                  className="bg-blue-400 p-3 px-4 rounded-full mr-2"
+                >
+                  <Text>{cat}</Text>
+                </TouchableOpacity>
+              );
+            } else {
+              return (
+                <TouchableOpacity
+                  onPress={() => setActiveCategory(cat)}
+                  key={cat}
+                  className="bg-blue-200 p-3 px-4 rounded-full mr-2"
+                >
+                  <Text>{cat}</Text>
+                </TouchableOpacity>
+              );
+            }
+          })}
+          <TouchableOpacity
+            onPress={() => {
+              addPatient();
+            }}
+            className="bg-blue-600 p-3 px-4 rounded-full mr-2"
+          >
+            <Text>Add Patient</Text>
+          </TouchableOpacity>
+        </ScrollView>
+      </View>
+      <Text> </Text>
+      {error ? <Text style={styles.errorText}>{error}</Text> : null}
+      <ScrollView style={{ height: 550 }} showsVerticalScrollIndicator={false}>
+        {patients.map((patient, index) => {
+          let bg =
+            patient.condition == "Critical"
+              ? "rgba(192, 132, 252,0.4)"
+              : "rgba(255,255,255,0.4)";
+          if (patient.name.startsWith(search)) {
             return (
               <TouchableOpacity
                 style={{ backgroundColor: bg }}
@@ -197,67 +197,76 @@ const ListPatientsScreen = ({ navigation }) => {
                         Age: {patient.age}
                       </Text>
                     </View>
-
                   </View>
                   <View className="flex-row space-x-1">
-                      <UserCircleIcon size="15" className="text-blue-500" />
-                      <Text className="text-xs text-gray-700">
-                        Gender: {patient.gender}
-                      </Text>
-                    </View>
+                    <UserCircleIcon size="15" className="text-blue-500" />
+                    <Text className="text-xs text-gray-700">
+                      Gender: {patient.gender}
+                    </Text>
+                  </View>
                 </View>
                 <View className="flex justify-center items-center">
                   <TouchableOpacity
-                    onPress={() => {viewProfile(patient)}}
+                    onPress={() => {
+                      viewProfile(patient);
+                    }}
                     className="bg-blue-400 p-2 px-4 rounded-full mr-2"
                   >
-                    <Text>View Profile</Text>
+                    <MagnifyingGlassIcon color={storeColors.text} size="20" />
                   </TouchableOpacity>
 
                   <TouchableOpacity
-                    onPress={() => {editProfile(patient)}}
+                    onPress={() => {
+                      editProfile(patient);
+                    }}
                     className="bg-blue-400 p-2 px-4 rounded-full mr-2"
                   >
-                    <Text>Edit Profile</Text>
+                    <PencilSquareIcon color={storeColors.text} size="20" />
                   </TouchableOpacity>
+                </View>
+                <View className="flex justify-center items-center">
                   <TouchableOpacity
-                    onPress={() => {addRecord(patient)}}
+                    onPress={() => {
+                      addRecord(patient);
+                    }}
                     className="bg-blue-400 p-2 px-4 rounded-full mr-2"
                   >
-                    <Text>Add Record</Text>
+                    <PlusIcon color={storeColors.text} size="20" />
                   </TouchableOpacity>
 
                   <TouchableOpacity
-                    onPress={() => {deletePatient(patient)}}
-                    className="bg-blue-400 p-2 px-4 rounded-full mr-2"
+                    onPress={() => {
+                      deletePatient(patient);
+                    }}
+                    className="bg-red-400 p-2 px-4 rounded-full mr-2"
                   >
-                    <Text>Delete Record</Text>
+                    <BellIcon color={storeColors.text} size="20" />
                   </TouchableOpacity>
-
                 </View>
               </TouchableOpacity>
-            );} else {
-              return (<></>)
-            }
-          })}
-        </ScrollView>
-        <Text> </Text>
-        <Text> </Text>
-        <Text> </Text>
-        <Text> </Text>
-        <Text> </Text>
-        <Text> </Text>
-        <Text> </Text>
-        <Text> </Text>
-        <Text> </Text>
-        <Text> </Text>
-        <Text> </Text>
-        <Text> </Text>
-        <Text> </Text>
-        <Text> </Text>
-        <Text> </Text>
-        <Text> </Text>
-</LinearGradient>
+            );
+          } else {
+            return <></>;
+          }
+        })}
+      </ScrollView>
+      <Text> </Text>
+      <Text> </Text>
+      <Text> </Text>
+      <Text> </Text>
+      <Text> </Text>
+      <Text> </Text>
+      <Text> </Text>
+      <Text> </Text>
+      <Text> </Text>
+      <Text> </Text>
+      <Text> </Text>
+      <Text> </Text>
+      <Text> </Text>
+      <Text> </Text>
+      <Text> </Text>
+      <Text> </Text>
+    </LinearGradient>
   );
 };
 
